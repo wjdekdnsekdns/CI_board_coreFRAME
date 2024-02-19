@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.notice.mapper.FIleMapper">
+
+    <insert id="fileInsert" parameterType="com.example.notice.domain.file.FileRequest">
+        <selectKey keyProperty="fileNum" resultType="int" order="BEFORE">
+            SELECT FILE_TBL_SEQ.nextval AS fileNum FROM dual
+        </selectKey>
+        INSERT INTO FILE_TBL (FILE_NUM, ORG_FILE_NAME, STORED_FILE_NAME, FILE_SIZE, REGDATE, FILE_BOARD)
+        VALUES (#{fileNum}, #{orgFileName}, #{storedFileName}, #{fileSize}, CURRENT_TIMESTAMP, #{fileBoard})
+    </insert>
+
+    <!--    파일 조회-->
+
+    <select id="getFile" resultType="com.example.notice.domain.file.FileRequest">
+        SELECT *
+        FROM FILE_TBL
+        WHERE FILE_BOARD = #{boardNum}
+    </select>
+</mapper>

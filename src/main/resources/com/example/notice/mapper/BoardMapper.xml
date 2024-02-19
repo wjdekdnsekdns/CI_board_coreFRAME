@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.notice.mapper.BoardMapper">
+
+    <!--    게시판 목록 출력-->
+    <select id="getList" resultType="com.example.notice.domain.Board">
+        SELECT *
+        FROM board_tbl
+    </select>
+
+    <!--    게시글 작성 -->
+    <insert id="write" parameterType="com.example.notice.domain.Board">
+        <selectKey keyProperty="board_Num" resultType="int" order="BEFORE">
+            SELECT BOARD_SEQ.nextval AS board_Num FROM dual
+        </selectKey>
+        INSERT INTO BOARD_TBL (BOARD_NUM, TITLE, CONTENT, WRITER, WRITE_DATE, PASSWORD, GROUP_ID, GROUP_ORDER, DEPTH,
+        BOARD_MASTER_ID)
+        VALUES (#{board_Num}, #{title}, #{content}, #{writer}, SYSDATE, #{password}, 1, 0, 1, 1)
+    </insert>
+
+
+    <!--    상세 조회-->
+    <select id="getBoard" parameterType="int" resultType="com.example.notice.domain.BoardDetails">
+        SELECT b.BOARD_NUM,
+               b.TITLE,
+               b.CONTENT,
+               b.WRITER,
+               b.WRITE_DATE,
+               b.PASSWORD,
+               r.REPLY_NUM,
+               r.REPLY_CONTENT,
+               r.REPLY_PASSWORD,
+               r.REPLY_DATE
+        FROM BOARD_TBL b
+                 LEFT JOIN
+             REPLY_TBL r ON b.BOARD_NUM = r.REPLY_BOARD
+        WHERE b.BOARD_NUM = #{boardNum}
+    </select>
+
+
+
+
+    <select id="getUpdateBoard" parameterType="int" resultType="com.example.notice.domain.BoardDetails">
+        SELECT b.BOARD_NUM,
+               b.WRITER,
+               b.TITLE,
+               b.CONTENT,
+               f.FILE_NUM,
+               f.ORG_FILE_NAME
+        FROM BOARD_TBL b
+                 LEFT JOIN
+             FILE_TBL f ON b.BOARD_NUM = f.FILE_BOARD
+        WHERE b.BOARD_NUM = #{boardNum}
+    </select>
+    <!--    게시글 수정-->
+    <update id="boardUpdate" parameterType="com.example.notice.domain.Board">
+        UPDATE BOARD_TBL
+        SET TITLE   =#{boardTitle},
+            CONTENT = #{boardContent}
+        WHERE BOARD_NUM = #{boardNum}
+    </update>
+    <!--    게시글 삭제-->
+    <delete id="boardDelete" parameterType="int">
+        DELETE
+        FROM BOARD_TBL
+        WHERE BOARD_NUM = #{boardNum}
+    </delete>
+</mapper>
+

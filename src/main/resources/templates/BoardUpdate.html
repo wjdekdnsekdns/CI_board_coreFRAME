@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href='/css/BoardUpdatePageCss.css'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+
+
+<header>
+    <div class="header">
+        <h3><a class="title" href="/home">BOARD</a></h3>
+    </div>
+</header>
+<div class="content">
+    <h2>[[${view.writer}]]의 게시글 수정</h2>
+    <form th:action="@{boardUpdate}" method="post" autocomplete="off" enctype="multipart/form-data">
+    <label>
+        <input type="text" id="titleInput" name="boardTitle" th:value="${view.title}">
+        <input type="text" id="contentInput" name="boardContent" th:value="${view.content}">
+        <input type="hidden" id="boardNumInput" name="boardNum" th:value="${view.board_Num}">
+    </label>
+    <button type="button">취소</button>
+    <button type="submit">등록</button>
+    </form>
+</div>
+</body>
+</html>

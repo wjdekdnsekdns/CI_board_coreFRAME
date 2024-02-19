@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>home</title>
+    <link rel="stylesheet" type="text/css" href='/css/mainPageCss.css'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<header>
+    <div class="header">
+        <h3><a class="title" href="/home">BOARD</a></h3>
+    </div>
+</header>
+<div id="content">
+    <div class="notice_title_search">
+        <h2 class="notice_title">게시판</h2>
+        <div class="board_search">
+            <label>
+                <select>
+                    <option value="1">제목</option>
+                    <option value="2">작성자</option>
+                </select>
+            </label>
+            <label>
+                <input type="text" class="search">
+            </label>
+            <button>검색</button>
+            <button><a href="/board/writePage">글쓰기</a></button>
+            <a href=""></a>
+        </div>
+
+    </div>
+    <!--  게시글 리스트 -->
+    <div class="board_list">
+        <div class="board_content" th:each="item : ${list}">
+            <div  class="write_and_date">
+                <span th:text="${item.writer}"></span>
+                <span th:text="${item.write_Date}"></span>
+            </div>
+            <div class="board_title">
+                <b class="board_num" th:text="${item.board_Num}"></b>
+                <a th:href="@{/board/details/{boardNum}(boardNum=${item.board_Num})}">
+                    <span th:text="${item.title}"></span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
