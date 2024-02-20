@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.notice.mapper.ReplyMapper">
+
+    <resultMap id="getBoardListResult" type="HashMap">
+        <result property="reply_Content" column="reply_Content" jdbcType="CLOB" javaType="java.lang.String" />
+    </resultMap>
+<!--    댓글 입력-->
+    <insert id="replyInsert" parameterType="com.example.notice.domain.Reply">
+        <selectKey keyProperty="reply_Num" resultType="int" order="BEFORE">
+            SELECT REPLY_TBL_SEQ.nextval AS reply_Num FROM dual
+        </selectKey>
+        INSERT into REPLY_TBL(REPLY_NUM,REPLY_CONTENT,REPLY_PASSWORD,REPLY_DATE,REPLY_BOARD)
+        values
+        (REPLY_TBL_SEQ.nextval,#{replyContent},#{password},SYSDATE,#{boardNum})
+    </insert>
+
+    <select id="getReply" parameterType="int" resultType="com.example.notice.domain.Reply">
+        select * from REPLY_TBL where REPLY_BOARD = #{boardNum}
+    </select>
+
+    <update id="replyUpdate" parameterType="com.example.notice.domain.Reply">
+        update REPLY_TBL
+        set reply_Content = #{replyContent}
+        where REPLY_NUM = #{replyNum}
+    </update>
+
+<delete id="replyDelete" parameterType="int">
+    delete
+    from REPLY_TBL
+    where REPLY_NUM = #{replyNum}
+</delete>
+</mapper>
