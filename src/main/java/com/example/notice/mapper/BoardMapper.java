@@ -2,7 +2,6 @@ package com.example.notice.mapper;
 
 import com.example.notice.domain.Board;
 import com.example.notice.domain.BoardDetails;
-import com.example.notice.domain.file.FileRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

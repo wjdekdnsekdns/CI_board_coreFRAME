@@ -18,4 +18,10 @@
         FROM FILE_TBL
         WHERE FILE_BOARD = #{boardNum}
     </select>
+
+<delete id="fileDelete" parameterType="int">
+ delete
+ from FILE_TBL
+ where FILE_NUM = #{file_Num}
+</delete>
 </mapper>

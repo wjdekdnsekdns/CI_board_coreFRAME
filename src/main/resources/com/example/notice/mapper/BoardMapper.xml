@@ -27,14 +27,8 @@
                b.CONTENT,
                b.WRITER,
                b.WRITE_DATE,
-               b.PASSWORD,
-               r.REPLY_NUM,
-               r.REPLY_CONTENT,
-               r.REPLY_PASSWORD,
-               r.REPLY_DATE
+               b.PASSWORD
         FROM BOARD_TBL b
-                 LEFT JOIN
-             REPLY_TBL r ON b.BOARD_NUM = r.REPLY_BOARD
         WHERE b.BOARD_NUM = #{boardNum}
     </select>
 
@@ -45,12 +39,8 @@
         SELECT b.BOARD_NUM,
                b.WRITER,
                b.TITLE,
-               b.CONTENT,
-               f.FILE_NUM,
-               f.ORG_FILE_NAME
+               b.CONTENT
         FROM BOARD_TBL b
-                 LEFT JOIN
-             FILE_TBL f ON b.BOARD_NUM = f.FILE_BOARD
         WHERE b.BOARD_NUM = #{boardNum}
     </select>
     <!--    게시글 수정-->

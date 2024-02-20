@@ -3,9 +3,11 @@ package com.example.notice.controller;
 
 import com.example.notice.domain.Board;
 import com.example.notice.domain.BoardDetails;
+import com.example.notice.domain.Reply;
 import com.example.notice.domain.file.FileRequest;
 import com.example.notice.service.BoardService;
 import com.example.notice.service.FIleService;
+import com.example.notice.service.ReplyService;
 import com.example.notice.util.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
@@ -29,6 +31,7 @@ public class BoardController {
 
     private final BoardService service;
     private final FIleService fileService;
+    private final ReplyService replyService;
     private final FileUtils fileUtils;
 
     //    게시글 작성 페이지 이동
@@ -53,6 +56,7 @@ public class BoardController {
         BoardDetails boardDetails = service.getBoard(boardNum);
         model.addAttribute("list", fileService.fileList(boardNum));
         model.addAttribute("view", boardDetails);
+        model.addAttribute("reply",replyService.getList(boardNum));
         return "NoticeDetails";
     }
 
@@ -60,6 +64,7 @@ public class BoardController {
     @GetMapping("/boardUpdatePage/{boardNum}")
     public String boardUpdate(@PathVariable int boardNum, Model model) {
         BoardDetails boardDetails = service.getUpdateBoard(boardNum);
+        model.addAttribute("list", fileService.fileList(boardNum));
         model.addAttribute("view", boardDetails);
         return "BoardUpdate";
     }

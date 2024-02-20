@@ -40,34 +40,75 @@
         </div>
     </div>
     <div class="reply">
-        <form th:action="@{reply_write}" method="post" autocomplete="off">
+        <form th:action="@{/reply/replyWrite}" method="post" autocomplete="off">
             <label>
-                <input type="text" placeholder="댓글을 입력하세요">
+                <input type="text" id="replyContent" name="replyContent" placeholder="댓글을 입력하세요">
             </label>
             <label>
-                <input type="password" maxlength="4" placeholder="비밀번호 4자리">
+                <input type="password" id="password" name="password" maxlength="4" placeholder="비밀번호 4자리">
             </label>
+            <input type="hidden" id="boardNum" name="boardNum" th:value="${view.board_Num}">
             <br>
             <button type="submit">댓글 작성</button>
             <button type="button">답글 작성</button>
         </form>
     </div>
+    <!--    댓글 조회 수정 삭제 -->
+    <div class="reply_content" th:each="item : ${reply}">
+        <form id="deleteForm" action="/reply/replyDelete" method="POST">
+            <span th:text="${item.reply_Date}"></span> <a href="#" onclick="showAlert()">수정 </a>/ <a href="#" onclick="showDeleteAlert()">삭제</a><br>
+            <input type="hidden" id="replyNum1" name="replyNum" th:value="${item.reply_Num}">
+            <input type="hidden" id="replyBoardNum1" name="boardNum" th:value="${view.board_Num}">
+        </form>
+        <div class="reply_update">
+            <span th:text="${item.reply_Content}"></span>
+            <form th:action="@{/reply/replyUpdate}" id="replyForm" method="post" autocomplete="off">
+                <label>
+                    <input type="hidden" id="replyContentUpdate" name="replyContent" th:value="${item.reply_Content}">
+                    <input type="hidden" id="replyNum" name="replyNum" th:value="${item.reply_Num}">
+                    <input type="hidden" id="replyBoardNum" name="boardNum" th:value="${view.board_Num}">
+                    <input type="hidden" id="replyPassword" name="reply_Password" th:value="${item.reply_Password}">
+                </label>
+            </form>
+        </div>
+    </div>
 </div>
 <!-- 팝업 창 -->
 
 <script>
-    // 팝업 열기
-    function openPopup() {
-        document.getElementById("popup").style.display = "block";
+<!--    댓글 수정-->
+    function showAlert() {
+        var savedPassword = document.getElementById("replyPassword").value;
+        // 사용자로부터 비밀번호 입력 받기
+        var enteredPassword = prompt("비밀번호를 입력하세요 (4자리)");
+        if (enteredPassword !== null) {
+            if (enteredPassword === savedPassword) {
+                enteredContent = prompt("수정 댓글을 입력하세요");
+                document.getElementById("replyContentUpdate").value = enteredContent;
+                document.getElementById("replyForm").submit();
+            } else {
+                alert("비밀번호가 일치하지 않습니다.");
+            }
+        }
+
     }
 
-    // 팝업에서 비밀번호 확인
-    function submitPassword() {
-        var password = document.getElementById("passwordInput").value;
-        // 여기에 비밀번호 확인하는 로직 추가
-        console.log("비밀번호 확인:", password);
-        // 팝업 닫기
-        document.getElementById("popup").style.display = "none";
+    // 댓글 삭제
+    function showDeleteAlert() {
+        var savedPassword = document.getElementById("replyPassword").value;
+        // 사용자로부터 비밀번호 입력 받기
+        var enteredPassword = prompt("비밀번호를 입력하세요 (4자리)");
+        if (enteredPassword !== null) {
+            if (enteredPassword === savedPassword) {
+                result = confirm("정말로 삭제 하시겠습니까?");
+                if (result) {
+                    document.getElementById("deleteForm").submit();
+                    alert("삭제되었습니다.");
+                }
+            } else {
+                alert("비밀번호가 일치하지 않습니다.");
+            }
+        }
     }
 </script>
 </body>

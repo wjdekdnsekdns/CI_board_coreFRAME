@@ -11,8 +11,6 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-
-
 <header>
     <div class="header">
         <h3><a class="title" href="/home">BOARD</a></h3>
@@ -21,14 +19,35 @@
 <div class="content">
     <h2>[[${view.writer}]]의 게시글 수정</h2>
     <form th:action="@{boardUpdate}" method="post" autocomplete="off" enctype="multipart/form-data">
-    <label>
-        <input type="text" id="titleInput" name="boardTitle" th:value="${view.title}">
-        <input type="text" id="contentInput" name="boardContent" th:value="${view.content}">
-        <input type="hidden" id="boardNumInput" name="boardNum" th:value="${view.board_Num}">
-    </label>
-    <button type="button">취소</button>
-    <button type="submit">등록</button>
+        <label>
+            <input type="text" id="titleInput" name="boardTitle" th:value="${view.title}">
+            <input type="text" id="contentInput" name="boardContent" th:value="${view.content}">
+            <input type="hidden" id="boardNumInput" name="boardNum" th:value="${view.board_Num}">
+        </label>
+
+        <div class="mb-3">
+            <div class="input-group">
+                <label for="formFile" class="form-label"></label>
+                <input class="form-control" type="file" id="formFile" name="files">
+                <button type="button" onclick="addFile();" class="btn btn-light" id="add_file">파일 추가</button>
+            </div>
+        </div>
+        <div class="file_div">
+
+        </div>
+        <button type="button">취소</button>
+        <button type="submit">등록</button>
+    </form>
+    <form id="deleteForm" action="/file/fileDelete" method="POST">
+        <div class="board_content" th:each="item : ${list}">
+            <span th:text="${item.org_File_Name}"></span>
+            <input type="hidden" name="fileNum" th:value="${item.file_Num}">
+            <button type="button" class="btn btn-light">파일 삭제</button>
+        </div>
     </form>
 </div>
+<script>
+
+</script>
 </body>
 </html>
