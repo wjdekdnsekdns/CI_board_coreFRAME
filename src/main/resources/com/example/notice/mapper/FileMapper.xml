@@ -4,11 +4,11 @@
 <mapper namespace="com.example.notice.mapper.FIleMapper">
 
     <insert id="fileInsert" parameterType="com.example.notice.domain.file.FileRequest">
-        <selectKey keyProperty="fileNum" resultType="int" order="BEFORE">
-            SELECT FILE_TBL_SEQ.nextval AS fileNum FROM dual
+        <selectKey keyProperty="file_Num" resultType="int" order="BEFORE">
+            SELECT FILE_TBL_SEQ.nextval AS file_Num FROM dual
         </selectKey>
         INSERT INTO FILE_TBL (FILE_NUM, ORG_FILE_NAME, STORED_FILE_NAME, FILE_SIZE, REGDATE, FILE_BOARD)
-        VALUES (#{fileNum}, #{orgFileName}, #{storedFileName}, #{fileSize}, CURRENT_TIMESTAMP, #{fileBoard})
+        VALUES (#{file_Num}, #{org_File_Name}, #{stored_File_Name}, #{file_Size}, CURRENT_TIMESTAMP, #{file_Board})
     </insert>
 
     <!--    파일 조회-->

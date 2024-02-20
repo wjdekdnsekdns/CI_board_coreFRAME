@@ -8,11 +8,18 @@ import com.example.notice.service.BoardService;
 import com.example.notice.service.FIleService;
 import com.example.notice.util.FileUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.http.MediaType;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -34,7 +41,6 @@ public class BoardController {
     @PostMapping("/write")
     public String write(Board board, @RequestParam("files") List<MultipartFile> files) {
         service.write(board);
-        //int id = board.getBoardNum();
         int id = board.getBoard_Num();
         List<FileRequest> uploadedFiles = fileUtils.uploadFiles(files);
         fileService.saveFiles(id, uploadedFiles);
@@ -52,7 +58,7 @@ public class BoardController {
 
     // 게시글 수정 페이지 이동
     @GetMapping("/boardUpdatePage/{boardNum}")
-    public String boardUpdate(@PathVariable int boardNum, Model model){
+    public String boardUpdate(@PathVariable int boardNum, Model model) {
         BoardDetails boardDetails = service.getUpdateBoard(boardNum);
         model.addAttribute("view", boardDetails);
         return "BoardUpdate";
@@ -60,15 +66,44 @@ public class BoardController {
 
     // 게시글 수정
     @PostMapping("/boardUpdatePage/boardUpdate")
-    public String boardUpdate(@RequestParam("boardNum") int boardNum,@RequestParam("boardTitle") String boardTitle,@RequestParam("boardContent") String boardContent){
-        service.boardUpdate(boardNum,boardTitle,boardContent);
+    public String boardUpdate(@RequestParam("boardNum") int boardNum, @RequestParam("boardTitle") String boardTitle, @RequestParam("boardContent") String boardContent) {
+        service.boardUpdate(boardNum, boardTitle, boardContent);
         return "redirect:/home";
     }
 
     // 게시글 삭제
     @PostMapping("/boardDelete")
-    public String boardDelete(@RequestParam("boardNum") int boardNum){
+    public String boardDelete(@RequestParam("boardNum") int boardNum) {
         service.boardDelete(boardNum);
         return "redirect:/home";
     }
+
+
+
+    private static final String FILE_DIRECTORY = "C:\\noticeFile";
+    @GetMapping("/fileDownload/{fileName}")
+    public ResponseEntity<FileSystemResource> downloadFile(@PathVariable String fileName) throws IOException {
+        // Load file as Resource
+        Path filePath = Paths.get(FILE_DIRECTORY).resolve(fileName).normalize();
+        FileSystemResource resource = new FileSystemResource(filePath);
+
+        // Try to determine file's content type
+        String contentType = null;
+        try {
+            contentType = Files.probeContentType(filePath);
+        } catch (IOException ex) {
+            ex.printStackTrace(); // Handle or log the exception
+        }
+
+        // If content type is not detected, set it to application/octet-stream
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
 }

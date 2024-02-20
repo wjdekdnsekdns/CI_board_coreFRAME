@@ -17,6 +17,7 @@ import java.util.UUID;
 @Component
 public class FileUtils {
     private final String uploadPath = Paths.get("C:", "noticeFile").toString();
+   //private final String uploadPath = "C:\\noticeFile";
     /**
      * 다중 파일 업로드
      * @param multipartFiles - 파일 객체 List
@@ -46,7 +47,7 @@ public class FileUtils {
 
         String saveName = generateSaveFilename(multipartFile.getOriginalFilename());
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")).toString();
-        String uploadPath = getUploadPath(today) + File.separator + saveName;
+        String uploadPath = getUploadPath() + File.separator + saveName;
         File uploadFile = new File(uploadPath);
 
         try {
