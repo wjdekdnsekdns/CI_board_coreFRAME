@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+
 import java.util.List;
 
 @Service // 서비스 역할을 하는 것임을 명시
@@ -15,10 +16,10 @@ import java.util.List;
 public class FIleService {
 
     private final FIleMapper fileMapper;
-    private  FileRequest fileRequest;
+    private FileRequest fileRequest;
+
     @Transactional
     public void saveFiles(final int fileBoard, final List<FileRequest> files) {
-
 
 
         if (CollectionUtils.isEmpty(files)) {
@@ -38,6 +39,11 @@ public class FIleService {
 
     public List<FileRequest> fileList(int boardNum) {
         return fileMapper.getFile(boardNum);
+    }
+
+    @Transactional
+    public void fileDelete(int fileNum) {
+        fileMapper.fileDelete(fileNum);
     }
 
 }

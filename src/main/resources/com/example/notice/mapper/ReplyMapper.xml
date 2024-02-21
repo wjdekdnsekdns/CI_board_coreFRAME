@@ -17,7 +17,7 @@
     </insert>
 
     <select id="getReply" parameterType="int" resultType="com.example.notice.domain.Reply">
-        select * from REPLY_TBL where REPLY_BOARD = #{boardNum}
+        select * from REPLY_TBL where REPLY_BOARD = #{boardNum} ORDER BY REPLY_NUM DESC
     </select>
 
     <update id="replyUpdate" parameterType="com.example.notice.domain.Reply">

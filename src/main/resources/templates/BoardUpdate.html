@@ -42,12 +42,43 @@
         <div class="board_content" th:each="item : ${list}">
             <span th:text="${item.org_File_Name}"></span>
             <input type="hidden" name="fileNum" th:value="${item.file_Num}">
-            <button type="button" class="btn btn-light">파일 삭제</button>
+            <input type="hidden" name="boardNum" th:value="${view.board_Num}">
+            <button type="submit" class="btn btn-light">파일 삭제</button>
         </div>
     </form>
 </div>
 <script>
 
+    // TypeScript 코드
+
+    // 버튼 요소 찾기
+    const addButton = document.querySelector('.btn');
+
+    // 버튼에 클릭 이벤트 리스너 추가
+    addButton.addEventListener('click', function () {
+        // 새로운 파일 입력 필드 생성
+        const newInput = document.createElement('input');
+        newInput.setAttribute('type', 'file');
+        newInput.setAttribute('class', 'form-control');
+        newInput.setAttribute('name', 'files');
+
+
+
+        // 새로운 라벨 생성
+        const newLabel = document.createElement('label');
+        newLabel.setAttribute('for', 'formFile');
+        newLabel.setAttribute('class', 'form-label');
+
+        const lineBreak = document.createElement('br');
+
+        // form 요소 찾기
+        const form = document.querySelector('.file_div');
+
+        // 새로운 파일 입력 필드와 라벨을 추가
+        form.appendChild(newLabel);
+        form.appendChild(newInput);
+        form.appendChild(lineBreak);
+    });
 </script>
 </body>
 </html>

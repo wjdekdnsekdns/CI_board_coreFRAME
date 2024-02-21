@@ -71,9 +71,11 @@ public class BoardController {
 
     // 게시글 수정
     @PostMapping("/boardUpdatePage/boardUpdate")
-    public String boardUpdate(@RequestParam("boardNum") int boardNum, @RequestParam("boardTitle") String boardTitle, @RequestParam("boardContent") String boardContent) {
+    public String boardUpdate(@RequestParam("boardNum") int boardNum, @RequestParam("boardTitle") String boardTitle, @RequestParam("boardContent") String boardContent,@RequestParam("files") List<MultipartFile> files) {
         service.boardUpdate(boardNum, boardTitle, boardContent);
-        return "redirect:/home";
+        List<FileRequest> uploadedFiles = fileUtils.uploadFiles(files);
+        fileService.saveFiles(boardNum, uploadedFiles);
+        return "redirect:/board/details/" + boardNum;
     }
 
     // 게시글 삭제

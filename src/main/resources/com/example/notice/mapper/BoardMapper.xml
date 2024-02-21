@@ -3,11 +3,32 @@
 
 <mapper namespace="com.example.notice.mapper.BoardMapper">
 
-    <!--    게시판 목록 출력-->
-    <select id="getList" resultType="com.example.notice.domain.Board">
+    <!--  ========================================================  -->
+    <!-- 페이징 테스트 -->
+
+    <select id="getList" resultType="com.example.notice.domain.Board"
+            parameterType="com.example.notice.paging.Pagination">
         SELECT *
-        FROM board_tbl
+        FROM (SELECT ROW_NUMBER() OVER (ORDER BY BOARD_NUM) AS NUM, B.*
+              FROM BOARD_TBL B)
+        WHERE NUM BETWEEN #{pagination.limitStart} AND #{recordSize}
+        ORDER BY BOARD_NUM DESC
     </select>
+
+    <!-- 게시글 수 카운팅 -->
+    <select id="count" parameterType="com.example.notice.domain.Search" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD_TBL
+    </select>
+    <!--  ========================================================  -->
+
+
+    <!--    &lt;!&ndash;    게시판 목록 출력&ndash;&gt;-->
+    <!--    <select id="getList" resultType="com.example.notice.domain.Board">-->
+    <!--        SELECT *-->
+    <!--        FROM BOARD_TBL-->
+    <!--        ORDER BY BOARD_NUM DESC-->
+    <!--    </select>-->
 
     <!--    게시글 작성 -->
     <insert id="write" parameterType="com.example.notice.domain.Board">
@@ -31,8 +52,6 @@
         FROM BOARD_TBL b
         WHERE b.BOARD_NUM = #{boardNum}
     </select>
-
-
 
 
     <select id="getUpdateBoard" parameterType="int" resultType="com.example.notice.domain.BoardDetails">

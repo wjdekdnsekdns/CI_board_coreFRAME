@@ -12,4 +12,6 @@ void fileInsert(FileRequest fileRequest);
 
     // 파일 리스트 조회
     List<FileRequest> getFile(int boardNum);
+
+    void fileDelete(int fileNum);
 }

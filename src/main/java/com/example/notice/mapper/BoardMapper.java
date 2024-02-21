@@ -2,6 +2,7 @@ package com.example.notice.mapper;
 
 import com.example.notice.domain.Board;
 import com.example.notice.domain.BoardDetails;
+import com.example.notice.domain.Search;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -9,8 +10,20 @@ import java.util.List;
 @Repository
 public interface BoardMapper {
 
+
+
+    // =================================================
+    // 페이징 테스트
+
     // 게시판 리스트 출력
-    List<Board> getList();
+    List<Board> getList(Search params);
+    int count(Search params);
+
+    // =================================================
+
+
+//    // 게시판 리스트 출력 페이징 안한거
+//    List<Board> getList();
 
     // 게시판 작성
     void write(Board board);
@@ -19,12 +32,11 @@ public interface BoardMapper {
     BoardDetails getBoard(int boardNum);
 
 
-
     // 게시판 수정 페이지
     BoardDetails getUpdateBoard(int boardNum);
 
     // 게시판 수정
-    void boardUpdate(int boardNum ,String boardTitle, String boardContent);
+    void boardUpdate(int boardNum, String boardTitle, String boardContent);
 
     // 게시판 삭제
     void boardDelete(int boardNum);
