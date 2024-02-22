@@ -24,8 +24,9 @@ public class mainController {
     public String manpage(@ModelAttribute("params") final Search params, Model model) {
         PagingResponse<Board> response = service.findAllBoard(params);
         model.addAttribute("response", response);
-        System.out.println(response.getPagination().getLimitStart());
-        System.out.println(params.getRecordSize());
+        System.out.println("getLimitStart() : " + response.getPagination().getLimitStart());
+        System.out.println("getRecordSize() : " + params.getRecordSize());
+        System.out.println("getPage() : " + params.getPage());
         return "home";
     }
 }

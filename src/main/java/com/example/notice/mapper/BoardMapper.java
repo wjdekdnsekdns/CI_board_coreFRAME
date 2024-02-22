@@ -11,23 +11,17 @@ import java.util.List;
 public interface BoardMapper {
 
 
-
-    // =================================================
-    // 페이징 테스트
-
     // 게시판 리스트 출력
     List<Board> getList(Search params);
+
     int count(Search params);
 
-    // =================================================
-
-
-//    // 게시판 리스트 출력 페이징 안한거
-//    List<Board> getList();
 
     // 게시판 작성
     void write(Board board);
 
+    void commentWrite(Board board, BoardDetails parent);
+    void commentUpdate(Board board);
     // 게시판 상세 조회
     BoardDetails getBoard(int boardNum);
 

@@ -14,11 +14,7 @@ public class BoardDetails {
     private String writer;
     private Date write_Date;
     private String password;
-    private int reply_Num;
-    private String reply_Content;
-    private String reply_Password;
-    private Date reply_Date;
-    private int file_Num;
-    private String org_File_Name;
-    private NUMBER file_Size;
+    private int group_Id;
+    private int group_Order;
+    private int depth;
 }

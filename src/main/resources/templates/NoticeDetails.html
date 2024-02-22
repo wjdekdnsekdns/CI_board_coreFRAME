@@ -50,7 +50,8 @@
             <input type="hidden" id="boardNum" name="boardNum" th:value="${view.board_Num}">
             <br>
             <button type="submit">댓글 작성</button>
-            <button type="button">답글 작성</button>
+<!--            th:href="@{/board/comment/{boardNum}(boardNum=${view.board_Num})}"-->
+            <button type="button"><a th:href="@{/board/comment/{boardNum}(boardNum=${view.board_Num})}">답글 작성</a></button>
         </form>
     </div>
     <!--    댓글 조회 수정 삭제 -->

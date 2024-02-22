@@ -53,7 +53,12 @@ public class BoardService {
     public void write(Board board) {
         boardMapper.write(board);
     }
-
+    public void commentWrite(Board board,BoardDetails parent) {
+        boardMapper.commentWrite(board,parent);
+    }
+public void commentUpdate(Board board){
+        boardMapper.commentUpdate(board);
+}
     // 게시글 상세 조회
     public BoardDetails getBoard(int boardNum) {
         return boardMapper.getBoard(boardNum);

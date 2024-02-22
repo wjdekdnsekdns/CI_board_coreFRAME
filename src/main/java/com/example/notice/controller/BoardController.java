@@ -3,7 +3,6 @@ package com.example.notice.controller;
 
 import com.example.notice.domain.Board;
 import com.example.notice.domain.BoardDetails;
-import com.example.notice.domain.Reply;
 import com.example.notice.domain.file.FileRequest;
 import com.example.notice.service.BoardService;
 import com.example.notice.service.FIleService;
@@ -82,6 +81,25 @@ public class BoardController {
     @PostMapping("/boardDelete")
     public String boardDelete(@RequestParam("boardNum") int boardNum) {
         service.boardDelete(boardNum);
+        return "redirect:/home";
+    }
+
+
+    //    답글 작성 페이지
+    @GetMapping("/comment/{boardNum}")
+    public String commentPage(@PathVariable int boardNum, Model model){
+        model.addAttribute("view", service.getBoard(boardNum));
+        return "CommentWrite";
+    }
+//    답글 작성
+    @PostMapping("/commentWrite")
+    public String commentWrite(Board board, @RequestParam("files") List<MultipartFile> files,@RequestParam("board_Num") int boardNum){
+        int id = board.getBoard_Num();
+        List<FileRequest> uploadedFiles = fileUtils.uploadFiles(files);
+        BoardDetails parent = service.getBoard(boardNum);
+        service.commentUpdate(board);
+        service.commentWrite(board,parent);
+        fileService.saveFiles(id, uploadedFiles);
         return "redirect:/home";
     }
 

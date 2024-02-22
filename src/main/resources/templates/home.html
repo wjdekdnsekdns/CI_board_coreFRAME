@@ -19,51 +19,27 @@
 <div id="content">
     <div class="notice_title_search">
         <h2 class="notice_title">게시판</h2>
-        <div class="board_search">
-            <label>
-                <select>
-                    <option value="1">제목</option>
-                    <option value="2">작성자</option>
-                </select>
-            </label>
-            <label>
-                <input type="text" class="search">
-            </label>
-            <button>검색</button>
-            <button><a href="/board/writePage">글쓰기</a></button>
-            <a href=""></a>
-        </div>
+        <form id="searchForm" onsubmit="return false;" autocomplete="off">
+            <!-- 제목 작성자 검색 -->
+            <div class="board_search">
+                <label>
+                    <select id="searchType" name="searchType">
+                        <option value="title">제목</option>
+                        <option value="writer">작성자</option>
+                    </select>
+                </label>
+                <label>
+                    <input type="text" id="keyword" name="keyword" placeholder="키워드를 입력해 주세요." title="키워드 입력"/>
+                </label>
+                <button type="button" class="bt_search" onclick="movePage2(1);"><i class="fas fa-search"></i><span
+                        class="skip_info">검색</span></button>
+                <button><a href="/board/writePage">글쓰기</a></button>
+                <a href=""></a>
+            </div>
+        </form>
 
     </div>
-    <!--  게시글 리스트 -->
-<!--    <div class="board_list">-->
-<!--        <div class="board_content" th:each="item : ${response.list}">-->
-<!--            <div class="write_and_date">-->
-<!--                <span th:text="${item.writer}"></span>-->
-<!--                <span th:text="${item.write_Date}"></span>-->
-<!--            </div>-->
-<!--            <div class="board_title">-->
-<!--                <b class="board_num" th:text="${item.board_Num}"></b>-->
-<!--                <a th:href="@{/board/details/{boardNum}(boardNum=${item.board_Num})}">-->
-<!--                    <span th:text="${item.title}"></span>-->
-<!--                </a>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div id="test">-->
-
-<!--        </div>-->
-
-<!--        <div class="paging">-->
-<!--            &lt;!&ndash;            <a href="javascript:void(0);" onclick="movePage(1)" class="page_bt first">첫 페이지</a>&ndash;&gt;-->
-<!--            &lt;!&ndash;            <a href="javascript:void(0);" onclick="movePage(${pagination.startPage - 1})" class="page_bt prev">이전 페이지</a>&ndash;&gt;-->
-<!--            <div th:each="pageNumber : ${#numbers.sequence(response.pagination.startPage, response.pagination.endPage)}">-->
-<!--                <a th:href="'javascript:void(0);'" th:onclick="'movePage(' + ${pageNumber} + ');'"-->
-<!--                   th:text="${pageNumber}"></a>-->
-<!--            </div>-->
-<!--            &lt;!&ndash;            <a href="javascript:void(0);" onclick="movePage(${pagination.endPage + 1});" class="page_bt next">다음 페이지</a>&ndash;&gt;-->
-<!--            &lt;!&ndash;            <a href="javascript:void(0);" onclick="movePage(${pagination.totalPageCount});" class="page_bt last">마지막 페이지</a>&ndash;&gt;-->
-<!--        </div>-->
-<!--    </div>-->
+    <!--    게시글 리스트-->
     <div class="board_list">
         <div class="board_content" th:each="item : ${response.list}">
             <div class="write_and_date">
@@ -81,35 +57,70 @@
 
     <!-- 페이징 링크를 표시하는 부분 -->
     <div class="paging">
+        <a href="javascript:void(0);" onclick="movePage(-1);" class="page_bt next">이전 페이지</a>
         <div th:each="pageNumber : ${#numbers.sequence(response.pagination.startPage, response.pagination.endPage)}">
-            <a th:href="'javascript:void(0);'" th:onclick="'movePage(' + ${pageNumber} + ');'" th:text="${pageNumber}"></a>
+            <a th:href="'javascript:void(0);'" th:onclick="'movePage2(' + ${pageNumber} + ');'"
+               th:text="${pageNumber}"></a>
         </div>
+        <input type="hidden" id="pageNum" th:value="${params.page}">
+        <a href="javascript:void(0);" onclick="movePage(1);" class="page_bt next">다음 페이지</a>
     </div>
 </div>
 <script>
+
+    window.onload = () => {
+        setQueryStringParams();
+    }
+
     /*<![CDATA[*/
     // 페이지 이동
-    function movePage(page) {
-        console.log(page)
-        // 1. drawPage( )의 각 버튼에 선언된 onclick 이벤트를 통해 전달받는 page(페이지 번호)를 기준으로 객체 생성
-        const queryParams = {
-            page: (page) ? page : 1,
-            recordSize: 10,
-            pageSize: 10
-        }
+    const form = document.getElementById('searchForm');
+    console.log(form.searchType.value)
 
-        /*
-         * 2. location.pathname : 리스트 페이지의 URI("/post/list.do")를 의미
-         *    new URLSearchParams(queryParams).toString() : queryParams의 모든 프로퍼티(key-value)를 쿼리 스트링으로 변환
-         *    URI + 쿼리 스트링에 해당하는 주소로 이동
-         *    (해당 함수가 리턴해주는 값을 브라우저 콘솔(console)에 찍어보시면 쉽게 이해하실 수 있습니다.)
-         */
+    function movePage(change) {
+        const form = document.getElementById('searchForm');
+        const currentPage = parseInt(document.getElementById("pageNum").value);
+        const newPage = currentPage + change;
+
+        const queryParams = {
+            page: (newPage > 0) ? newPage : 1,
+            recordSize: 10,
+            pageSize: 10,
+            searchType: form.searchType.value,
+            keyword: form.keyword.value
+        };
         location.href = location.pathname + '?' + new URLSearchParams(queryParams).toString();
     }
 
-    /*]]>*/
+    function movePage2(change) {
+        const form = document.getElementById('searchForm');
+        const newPage = change;
 
+        const queryParams = {
+            page: (newPage > 0) ? newPage : 1,
+            recordSize: 10,
+            pageSize: 10,
+            searchType: form.searchType.value,
+            keyword: form.keyword.value
+        };
+        location.href = location.pathname + '?' + new URLSearchParams(queryParams).toString();
+    }
 
+    // 쿼리 스트링 파라미터 셋팅
+    function setQueryStringParams() {
+
+        if (!location.search) {
+            return false;
+        }
+
+        const form = document.getElementById('searchForm');
+
+        new URLSearchParams(location.search).forEach((value, key) => {
+            if (form[key]) {
+                form[key].value = value;
+            }
+        })
+    }
 </script>
 </body>
 </html>

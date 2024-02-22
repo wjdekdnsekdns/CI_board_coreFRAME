@@ -3,32 +3,26 @@
 
 <mapper namespace="com.example.notice.mapper.BoardMapper">
 
-    <!--  ========================================================  -->
-    <!-- 페이징 테스트 -->
 
+    <!--게시글 리스트 조회 -->
     <select id="getList" resultType="com.example.notice.domain.Board"
             parameterType="com.example.notice.paging.Pagination">
         SELECT *
-        FROM (SELECT ROW_NUMBER() OVER (ORDER BY BOARD_NUM) AS NUM, B.*
-              FROM BOARD_TBL B)
-        WHERE NUM BETWEEN #{pagination.limitStart} AND #{recordSize}
-        ORDER BY BOARD_NUM DESC
+        FROM (SELECT ROW_NUMBER() OVER (ORDER BY BOARD_NUM DESC) AS NUM, B.*
+        FROM BOARD_TBL B
+        <include refid="search"/>
+        )
+        WHERE NUM BETWEEN #{pagination.limitStart} AND #{pagination.limitStart} + 9
+        ORDER BY NUM
     </select>
 
     <!-- 게시글 수 카운팅 -->
     <select id="count" parameterType="com.example.notice.domain.Search" resultType="int">
         SELECT COUNT(*)
         FROM BOARD_TBL
+        <include refid="search"/>
     </select>
-    <!--  ========================================================  -->
 
-
-    <!--    &lt;!&ndash;    게시판 목록 출력&ndash;&gt;-->
-    <!--    <select id="getList" resultType="com.example.notice.domain.Board">-->
-    <!--        SELECT *-->
-    <!--        FROM BOARD_TBL-->
-    <!--        ORDER BY BOARD_NUM DESC-->
-    <!--    </select>-->
 
     <!--    게시글 작성 -->
     <insert id="write" parameterType="com.example.notice.domain.Board">
@@ -37,20 +31,31 @@
         </selectKey>
         INSERT INTO BOARD_TBL (BOARD_NUM, TITLE, CONTENT, WRITER, WRITE_DATE, PASSWORD, GROUP_ID, GROUP_ORDER, DEPTH,
         BOARD_MASTER_ID)
-        VALUES (#{board_Num}, #{title}, #{content}, #{writer}, SYSDATE, #{password}, 1, 0, 1, 1)
+        VALUES (#{board_Num}, #{title}, #{content}, #{writer}, SYSDATE, #{password}, #{board_Num}, 0, 1, 1)
     </insert>
-
+    <!--    답글 작성-->
+    <insert id="commentWrite" parameterType="com.example.notice.domain.Board">
+        <selectKey keyProperty="board_Num" resultType="int" order="BEFORE">
+            SELECT BOARD_SEQ.nextval AS board_Num FROM dual
+        </selectKey>
+        INSERT INTO BOARD_TBL (BOARD_NUM, TITLE, CONTENT, WRITER, WRITE_DATE, PASSWORD, GROUP_ID, GROUP_ORDER, DEPTH,
+        BOARD_MASTER_ID)
+        VALUES (#{board_Num}, #{board.title}, #{board.content}, #{board.writer}, SYSDATE, #{board.password},
+        #{parent.group_Id}, #{parent.group_Order}+1, ${parent.depth}+1, 1)
+    </insert>
+    <!--    답글 계층형 업데이트-->
+    <update id="commentUpdate" parameterType="com.example.notice.domain.Board">
+        UPDATE BOARD_TBL
+        SET GROUP_ORDER = GROUP_ORDER + 1
+        WHERE GROUP_ORDER = ${group_Order}+1
+          AND GROUP_ORDER > 0
+    </update>
 
     <!--    상세 조회-->
     <select id="getBoard" parameterType="int" resultType="com.example.notice.domain.BoardDetails">
-        SELECT b.BOARD_NUM,
-               b.TITLE,
-               b.CONTENT,
-               b.WRITER,
-               b.WRITE_DATE,
-               b.PASSWORD
-        FROM BOARD_TBL b
-        WHERE b.BOARD_NUM = #{boardNum}
+        SELECT *
+        FROM BOARD_TBL
+        WHERE BOARD_NUM = #{boardNum}
     </select>
 
 
@@ -75,5 +80,25 @@
         FROM BOARD_TBL
         WHERE BOARD_NUM = #{boardNum}
     </delete>
+
+    <!-- 게시글 검색 -->
+    <sql id="search">
+        <!-- 검색 키워드가 있을 때 -->
+        <if test="keyword != null and keyword != ''">
+            <choose>
+                <!-- 검색 유형이 있을 때 -->
+                <when test="searchType != null and searchType != ''">
+                    <choose>
+                        <when test="'title'.equals( searchType )">
+                            WHERE title LIKE '%' || #{keyword} || '%'
+                        </when>
+                        <when test="'writer'.equals( searchType )">
+                            WHERE writer LIKE '%' || #{keyword} || '%'
+                        </when>
+                    </choose>
+                </when>
+            </choose>
+        </if>
+    </sql>
 </mapper>
 
