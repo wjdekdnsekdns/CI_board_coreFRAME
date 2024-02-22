@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>write</title>
+    <link rel="stylesheet" type="text/css" href='/css/writePageCss.css'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"></script>
+
+</head>
+<body>
+<header>
+    <div class="header">
+        <h3><a class="title" href="/home">BOARD</a></h3>
+    </div>
+</header>
+<h2>답글 작성하기</h2>
+<div class="container">
+    <div class="content">
+        <form th:action="@{/board/commentWrite}" method="post" autocomplete="off" enctype="multipart/form-data">
+            <div class="writer_and_password">
+
+                <label for="writer">작성자</label>
+                <input type="text" id="writer" name="writer" placeholder="작성자를 입력하세요">
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요">
+            </div>
+            <div class="title_and_content">
+                <div class="title">
+                    <div class="label">
+                        <label for="title">제목</label>
+                    </div>
+                    <input  id="title" name="title" placeholder="제목을 입력하세요">
+                </div>
+                <div class="write_content">
+                    <div class="label">
+                        <label for="content">내용</label>
+                    </div>
+                    <textarea id="content" name="content" placeholder="내용을 입력하세요"></textarea>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="input-group">
+                    <label for="formFile" class="form-label"></label>
+                    <input class="form-control" type="file" id="formFile" name="files">
+                    <button type="button" onclick="addFile();" class="btn btn-light" id="add_file">파일 추가</button>
+                </div>
+            </div>
+            <div class="file_div">
+
+            </div>
+            <button type="submit" class="submit btn btn-light">등록</button>
+            <button type="button" class="submit btn btn-light"><a href="/home">취소</a></button>
+            <input type="hidden" id="board_Num" name="board_Num" th:value="${view.board_Num}">
+            <input type="hidden" id="ground_Id" name="ground_Id" th:value="${view.group_Id}">
+            <input type="hidden" id="ground_Order" name="ground_Order" th:value="${view.group_Order}">
+            <input type="hidden" id="depth" name="depth" th:value="${view.depth}">
+        </form>
+    </div>
+</div>
+<script>
+
+    // TypeScript 코드
+
+    // 버튼 요소 찾기
+    const addButton = document.querySelector('.btn');
+
+    // 버튼에 클릭 이벤트 리스너 추가
+    addButton.addEventListener('click', function () {
+        // 새로운 파일 입력 필드 생성
+        const newInput = document.createElement('input');
+        newInput.setAttribute('type', 'file');
+        newInput.setAttribute('class', 'form-control');
+        newInput.setAttribute('name', 'files');
+
+
+
+        // 새로운 라벨 생성
+        const newLabel = document.createElement('label');
+        newLabel.setAttribute('for', 'formFile');
+        newLabel.setAttribute('class', 'form-label');
+
+        const lineBreak = document.createElement('br');
+
+        // form 요소 찾기
+        const form = document.querySelector('.file_div');
+
+        // 새로운 파일 입력 필드와 라벨을 추가
+        form.appendChild(newLabel);
+        form.appendChild(newInput);
+        form.appendChild(lineBreak);
+    });
+</script>
+</body>
+</html>
