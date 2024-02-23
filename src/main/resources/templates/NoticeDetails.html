@@ -25,6 +25,8 @@
                      onclick="openPopup()">수정</a> / <button type="submit">삭제</button> <a>삭제</a></span>
             <input type="hidden" id="boardNumInput" name="boardNum" th:value="${view.board_Num}">
         </form>
+        <a th:href="@{/board/details/{boardNum}(boardNum=${view.board_Num})}">이전</a>
+        <a>다음</a>
         <div id="popup" style="display: none;">
             <input type="password" id="passwordInput" placeholder="비밀번호를 입력하세요">
             <button>확인</button>

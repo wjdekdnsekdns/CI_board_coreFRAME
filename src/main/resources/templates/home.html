@@ -47,10 +47,23 @@
                 <span th:text="${item.write_Date}"></span>
             </div>
             <div class="board_title">
-                <b class="board_num" th:text="${item.board_Num}"></b>
+                <b class="board_num" th:text="${item.num}"></b>
                 <a th:href="@{/board/details/{boardNum}(boardNum=${item.board_Num})}">
                     <span th:text="${item.title}"></span>
                 </a>
+            </div>
+            <div th:if="${item.group_Id == board.group_Id}" th:each="board : ${commentList}">
+                <!--답글 작성자 작성일자-->
+                <div class="write_and_date">
+                    <span th:text="${board.writer}"></span>
+                    <span th:text="${board.write_Date}"></span>
+                </div>
+                <!--답글 제목-->
+                <div class="board_title">
+                    <a th:href="@{/board/details/{boardNum}(boardNum=${board.board_Num})}">
+                        <span th:text="${board.title}"></span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

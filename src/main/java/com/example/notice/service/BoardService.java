@@ -21,12 +21,7 @@ public class BoardService {
 
     private final BoardMapper boardMapper;
 
-    //    ==========================================================
-    // 페이징 테스트
-    public List<Board> boardList(final Search params) {
-        return boardMapper.getList(params);
-    }
-
+    // 게시글 리스트 반환
     public PagingResponse<Board> findAllBoard(final Search params) {
         // 조건에 해당하는 데이터가 없는 경우, 응답 데이터에 비어있는 리스트와 null을 담아 반환
         int count = boardMapper.count(params);
@@ -35,30 +30,31 @@ public class BoardService {
         }
 
         // Pagination 객체를 생성해서 페이지 정보 계산 후 Search 타입의 객체인 params에 계산된 페이지 정보 저장
-        Pagination pagination = new Pagination(count,params);
+        Pagination pagination = new Pagination(count, params);
         params.setPagination(pagination);
 
         // 계산된 페이지 정보의 일부(limitStart, recordSize)를 기준으로 리스트 데이터 조회 후 응답 데이터 반환
         List<Board> list = boardMapper.getList(params);
-        System.out.println("pagination : " + pagination.isExistPrevPage());
+
         return new PagingResponse<>(list, pagination);
     }
-    //    ==========================================================
-//    // 게시글 리스트 반환
-//    public List<Board> boardList() {
-//        return boardMapper.getList();
-//    }
 
+    public List<Board> CommentList() {
+        return boardMapper.getCommentList();
+    }
     // 게시글 작성
     public void write(Board board) {
         boardMapper.write(board);
     }
-    public void commentWrite(Board board,BoardDetails parent) {
-        boardMapper.commentWrite(board,parent);
+
+    public void commentWrite(Board board, BoardDetails parent) {
+        boardMapper.commentWrite(board, parent);
     }
-public void commentUpdate(Board board){
-        boardMapper.commentUpdate(board);
-}
+
+    public void commentUpdate(Board board, BoardDetails parent) {
+        boardMapper.commentUpdate(board, parent);
+    }
+
     // 게시글 상세 조회
     public BoardDetails getBoard(int boardNum) {
         return boardMapper.getBoard(boardNum);

@@ -14,6 +14,10 @@ public interface BoardMapper {
     // 게시판 리스트 출력
     List<Board> getList(Search params);
 
+//    답글 조회
+    List<Board> getCommentList();
+
+    // 게시글 카운트
     int count(Search params);
 
 
@@ -21,7 +25,7 @@ public interface BoardMapper {
     void write(Board board);
 
     void commentWrite(Board board, BoardDetails parent);
-    void commentUpdate(Board board);
+    void commentUpdate(Board board,BoardDetails parent);
     // 게시판 상세 조회
     BoardDetails getBoard(int boardNum);
 

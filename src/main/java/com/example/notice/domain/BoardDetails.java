@@ -8,6 +8,7 @@ import java.sql.Date;
 @Getter
 @Setter
 public class BoardDetails {
+    private int num;
     private int board_Num;
     private String title;
     private String content;

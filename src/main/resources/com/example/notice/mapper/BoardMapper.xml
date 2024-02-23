@@ -10,12 +10,19 @@
         SELECT *
         FROM (SELECT ROW_NUMBER() OVER (ORDER BY BOARD_NUM DESC) AS NUM, B.*
         FROM BOARD_TBL B
+        WHERE B.GROUP_ORDER = 0
         <include refid="search"/>
         )
         WHERE NUM BETWEEN #{pagination.limitStart} AND #{pagination.limitStart} + 9
         ORDER BY NUM
     </select>
 
+    <!--    답글 조회-->
+    <select id="getCommentList" resultType="com.example.notice.domain.Board">
+        SELECT * FROM BOARD_TBL
+        WHERE GROUP_ORDER != 0
+        ORDER BY GROUP_ORDER
+    </select>
     <!-- 게시글 수 카운팅 -->
     <select id="count" parameterType="com.example.notice.domain.Search" resultType="int">
         SELECT COUNT(*)
@@ -47,15 +54,17 @@
     <update id="commentUpdate" parameterType="com.example.notice.domain.Board">
         UPDATE BOARD_TBL
         SET GROUP_ORDER = GROUP_ORDER + 1
-        WHERE GROUP_ORDER = ${group_Order}+1
-          AND GROUP_ORDER > 0
+        WHERE GROUP_ORDER > ${parent.group_Order}
     </update>
 
     <!--    상세 조회-->
     <select id="getBoard" parameterType="int" resultType="com.example.notice.domain.BoardDetails">
         SELECT *
-        FROM BOARD_TBL
-        WHERE BOARD_NUM = #{boardNum}
+        FROM (
+        SELECT ROW_NUMBER() OVER (ORDER BY BOARD_NUM DESC) AS NUM, B.*
+        FROM BOARD_TBL B
+        <include refid="details"/>
+        )
     </select>
 
 
@@ -99,6 +108,29 @@
                 </when>
             </choose>
         </if>
+    </sql>
+
+    <sql id="comment">
+-- 답글과 답답글에 대한 쿼리 구분
+        <choose>
+            <when test="${parent.group_Order} != 0">
+                WHERE GROUP_ORDER = ${parent.group_Order} + 1
+                AND GROUP_ORDER > ${parent.group_Order} AND GROUP_ID = ${parent.group_Id}
+            </when>
+            <when test="${parent.group_Order} == 0">
+                WHERE GROUP_ORDER > 0
+            </when>
+        </choose>
+    </sql>
+    <sql id="details">
+        <choose>
+            <when test="group_order == 0">
+                WHERE B.GROUP_ORDER = 0 AND BOARD_NUM = #{boardNum}
+            </when>
+            <otherwise>
+                WHERE B.BOARD_NUM = #{boardNum}
+            </otherwise>
+        </choose>
     </sql>
 </mapper>
 

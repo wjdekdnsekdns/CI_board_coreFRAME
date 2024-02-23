@@ -11,6 +11,7 @@ import java.sql.Date;
 @Setter
 
 public class Board {
+    private int num;
     private int board_Num;
     private String title;
     private String content;

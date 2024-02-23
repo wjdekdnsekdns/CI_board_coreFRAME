@@ -97,7 +97,7 @@ public class BoardController {
         int id = board.getBoard_Num();
         List<FileRequest> uploadedFiles = fileUtils.uploadFiles(files);
         BoardDetails parent = service.getBoard(boardNum);
-        service.commentUpdate(board);
+        service.commentUpdate(board, parent);
         service.commentWrite(board,parent);
         fileService.saveFiles(id, uploadedFiles);
         return "redirect:/home";

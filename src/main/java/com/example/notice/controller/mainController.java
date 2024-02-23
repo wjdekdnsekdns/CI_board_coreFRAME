@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/")
 @RequiredArgsConstructor // 추가1
@@ -24,9 +26,8 @@ public class mainController {
     public String manpage(@ModelAttribute("params") final Search params, Model model) {
         PagingResponse<Board> response = service.findAllBoard(params);
         model.addAttribute("response", response);
-        System.out.println("getLimitStart() : " + response.getPagination().getLimitStart());
-        System.out.println("getRecordSize() : " + params.getRecordSize());
-        System.out.println("getPage() : " + params.getPage());
+        List<Board> commentList = service.CommentList();
+        model.addAttribute("commentList", commentList);
         return "home";
     }
 }
