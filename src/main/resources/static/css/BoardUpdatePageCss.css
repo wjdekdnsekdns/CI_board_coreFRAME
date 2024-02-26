@@ -8,3 +8,24 @@
         text-decoration: none;
     }
 }
+.content{
+    width: 800px;
+    margin: 0 auto;
+    #titleInput{
+        width: 250px;
+        height: 30px;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+        margin: 10px 0;
+    }
+    #contentInput {
+        width: 800px;
+        height: 200px;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+    #deleteForm{
+        margin-top: 10px;
+    }
+}

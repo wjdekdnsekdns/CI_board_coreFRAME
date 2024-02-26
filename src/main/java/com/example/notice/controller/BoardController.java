@@ -50,12 +50,18 @@ public class BoardController {
     }
 
     // 게시글 상세 페이지 이동
-    @GetMapping("/details/{boardNum}")
-    public String details(@PathVariable int boardNum, Model model) {
-        BoardDetails boardDetails = service.getBoard(boardNum);
-        model.addAttribute("list", fileService.fileList(boardNum));
+    @GetMapping("/details/{boardNum}/{num}")
+    public String details(@PathVariable int boardNum, @PathVariable int num,Model model) {
+        BoardDetails boardDetails;
+        if(num == 0){
+            boardDetails = service.getBoard(boardNum);
+        }else{
+            boardDetails = service.getBoardtest(boardNum, num);
+        }
         model.addAttribute("view", boardDetails);
+        model.addAttribute("list", fileService.fileList(boardNum));
         model.addAttribute("reply",replyService.getList(boardNum));
+
         return "NoticeDetails";
     }
 
@@ -63,6 +69,7 @@ public class BoardController {
     @GetMapping("/boardUpdatePage/{boardNum}")
     public String boardUpdate(@PathVariable int boardNum, Model model) {
         BoardDetails boardDetails = service.getUpdateBoard(boardNum);
+        System.out.println(boardDetails.getNum());
         model.addAttribute("list", fileService.fileList(boardNum));
         model.addAttribute("view", boardDetails);
         return "BoardUpdate";
@@ -74,7 +81,7 @@ public class BoardController {
         service.boardUpdate(boardNum, boardTitle, boardContent);
         List<FileRequest> uploadedFiles = fileUtils.uploadFiles(files);
         fileService.saveFiles(boardNum, uploadedFiles);
-        return "redirect:/board/details/" + boardNum;
+        return "redirect:/home";
     }
 
     // 게시글 삭제

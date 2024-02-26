@@ -20,7 +20,7 @@
     <h2>[[${view.writer}]]의 게시글 수정</h2>
     <form th:action="@{boardUpdate}" method="post" autocomplete="off" enctype="multipart/form-data">
         <label>
-            <input type="text" id="titleInput" name="boardTitle" th:value="${view.title}">
+            <input type="text" id="titleInput" name="boardTitle" th:value="${view.title}"><br>
             <input type="text" id="contentInput" name="boardContent" th:value="${view.content}">
             <input type="hidden" id="boardNumInput" name="boardNum" th:value="${view.board_Num}">
         </label>
@@ -35,8 +35,8 @@
         <div class="file_div">
 
         </div>
-        <button type="button">취소</button>
-        <button type="submit">등록</button>
+        <button type="submit" class="btn btn-light">등록</button>
+        <button type="button" class="btn btn-light">취소</button>
     </form>
     <form id="deleteForm" action="/file/fileDelete" method="POST">
         <div class="board_content" th:each="item : ${list}">

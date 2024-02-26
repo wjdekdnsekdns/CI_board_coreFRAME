@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href='/css/noticeDetailsPage.css'>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
 </head>
 <body>
@@ -18,30 +18,45 @@
 </header>
 <div class="container">
     <div class="content">
-        <span class="writer">[[${view.writer}]]</span>
-        <span class="write_date">[[${view.write_Date}]]</span>
-        <form th:action="@{/board/boardDelete}" method="post">
-            <span><a class="boardUpdate" th:href="@{/board/boardUpdatePage/{boardNum}(boardNum=${view.board_Num})}"
-                     onclick="openPopup()">수정</a> / <button type="submit">삭제</button> <a>삭제</a></span>
+
+        <form th:action="@{/board/boardDelete}" method="post" id="boardDelete">
+            <!--        게시글 작성자 / 작성일자-->
+            <span class="writer">[[${view.writer}]]</span>
+            <span class="write_date">[[${view.write_Date}]]</span>
+            <!--        이전/다음-->
+            <button type="button" class="btn btn-light"><a
+                    th:href="@{/board/details/{boardNum}/{num}(boardNum=${view.board_Num}, num=${view.num -1})}">이전</a>
+            </button>
+            <button type="button" class="btn btn-light"><a
+                    th:href="@{/board/details/{boardNum}/{num}(boardNum=${view.board_Num}, num=${view.num +1})}">다음</a>
+            </button>
+
+            <!-- 게시글 수정 삭제 -->
+            <span> <button type="button" class="btn btn-light update_button"><a class="boardUpdate"
+                                                                                th:href="@{/board/boardUpdatePage/{boardNum}(boardNum=${view.board_Num})}"
+                                                                                onclick="openPopup()">수정</a></button>
+                <button type="submit" class="btn btn-light">삭제</button></span>
+            <button type="button" class="btn btn-light reply_btn" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                <a href="#">수정 / 삭제</a>
+            </button>
             <input type="hidden" id="boardNumInput" name="boardNum" th:value="${view.board_Num}">
+            <input type="hidden" id="boardPassword" name="password" th:value="${view.password}">
+
         </form>
-        <a th:href="@{/board/details/{boardNum}(boardNum=${view.board_Num})}">이전</a>
-        <a>다음</a>
-        <div id="popup" style="display: none;">
-            <input type="password" id="passwordInput" placeholder="비밀번호를 입력하세요">
-            <button>확인</button>
-            <button onclick="submitPassword()">취소</button>
+        <!--        게시글 제목/ 내용-->
+        <div class="board_title_content">
+            <h1>[[${view.title}]]</h1>
+            <p class="notice_content">[[${view.content}]]</p>
         </div>
-        <h1>[[${view.title}]]</h1>
-        <p>[[${view.content}]]</p>
+        <!--            파일 -->
         <div class="board_content" th:each="item : ${list}">
             <a th:href="@{/board/fileDownload/{fileName}(fileName=${item.stored_File_Name})}">
                 <span th:text="${item.org_File_Name}"></span>
             </a>
-            <span th:text="${item.file_Num}"></span>
         </div>
     </div>
     <div class="reply">
+        <!--        댓글 작성 폼-->
         <form th:action="@{/reply/replyWrite}" method="post" autocomplete="off">
             <label>
                 <input type="text" id="replyContent" name="replyContent" placeholder="댓글을 입력하세요">
@@ -49,68 +64,146 @@
             <label>
                 <input type="password" id="password" name="password" maxlength="4" placeholder="비밀번호 4자리">
             </label>
+            <button type="submit" class="btn btn-light">댓글 작성</button>
+            <button type="button" class="btn btn-light"><a
+                    th:href="@{/board/comment/{boardNum}(boardNum=${view.board_Num})}">답글 작성</a></button>
             <input type="hidden" id="boardNum" name="boardNum" th:value="${view.board_Num}">
-            <br>
-            <button type="submit">댓글 작성</button>
-<!--            th:href="@{/board/comment/{boardNum}(boardNum=${view.board_Num})}"-->
-            <button type="button"><a th:href="@{/board/comment/{boardNum}(boardNum=${view.board_Num})}">답글 작성</a></button>
+            <input type="hidden" id="num" name="num" th:value="${view.num}">
         </form>
+
     </div>
     <!--    댓글 조회 수정 삭제 -->
     <div class="reply_content" th:each="item : ${reply}">
+        <!--        삭제-->
         <form id="deleteForm" action="/reply/replyDelete" method="POST">
-            <span th:text="${item.reply_Date}"></span> <a href="#" onclick="showAlert()">수정 </a>/ <a href="#" onclick="showDeleteAlert()">삭제</a><br>
+            <span class="reply_date" th:text="${item.reply_Date}"></span>
+            <button type="button" class="btn btn-light reply_btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <a href="#">수정 / 삭제</a>
+            </button>
+            <br>
             <input type="hidden" id="replyNum1" name="replyNum" th:value="${item.reply_Num}">
             <input type="hidden" id="replyBoardNum1" name="boardNum" th:value="${view.board_Num}">
+            <input type="hidden" id="num1" name="num" th:value="${view.num}">
         </form>
+        <!--        수정-->
         <div class="reply_update">
             <span th:text="${item.reply_Content}"></span>
-            <form th:action="@{/reply/replyUpdate}" id="replyForm" method="post" autocomplete="off">
+            <form th:action="@{/reply/replyUpdate}" id="updateForm" method="post" autocomplete="off">
                 <label>
+                    <input type="hidden" id="num2" name="num" th:value="${view.num}">
                     <input type="hidden" id="replyContentUpdate" name="replyContent" th:value="${item.reply_Content}">
                     <input type="hidden" id="replyNum" name="replyNum" th:value="${item.reply_Num}">
                     <input type="hidden" id="replyBoardNum" name="boardNum" th:value="${view.board_Num}">
                     <input type="hidden" id="replyPassword" name="reply_Password" th:value="${item.reply_Password}">
                 </label>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">댓글 수정 / 삭제</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="col-md-6">
+                                    <label for="validationDefault03" class=""></label>
+                                    <input type="password" class="" id="validationDefault03" required
+                                           placeholder="비밀번호를 입력하세요">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="updateContent" class=""></label>
+                                    <input type="text" id="updateContent" name="updateContent" required
+                                           placeholder="댓글을 입력하세요">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                    <button type="submit" id="updateButton" class="btn btn-light">수정</button>
+                                    <button type="button" id="deleteButton" class="btn btn-light"><a>삭제</a></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel2">댓글 수정 / 삭제</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-6">
+                        <label for="validationDefault04" class=""></label>
+                        <input type="password" class="" id="validationDefault04" required
+                               placeholder="비밀번호를 입력하세요">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="boardupdateButton" class="btn btn-light">수정</button>
+                    <button type="button" id="boarddeleteButton" class="btn btn-light"><a>삭제</a></button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<!-- 팝업 창 -->
 
 <script>
-<!--    댓글 수정-->
-    function showAlert() {
-        var savedPassword = document.getElementById("replyPassword").value;
-        // 사용자로부터 비밀번호 입력 받기
-        var enteredPassword = prompt("비밀번호를 입력하세요 (4자리)");
-        if (enteredPassword !== null) {
-            if (enteredPassword === savedPassword) {
-                enteredContent = prompt("수정 댓글을 입력하세요");
-                document.getElementById("replyContentUpdate").value = enteredContent;
-                document.getElementById("replyForm").submit();
-            } else {
-                alert("비밀번호가 일치하지 않습니다.");
-            }
-        }
+    // TypeScript 부분
+    document.getElementById("updateButton").addEventListener("click", function () {
+        comparePasswords("update");
+    });
 
+    document.getElementById("deleteButton").addEventListener("click", function () {
+        comparePasswords("delete");
+    });
+
+    function comparePasswords(buttonType) {
+        const inputPassword = document.getElementById("replyPassword").value;
+        const storedPassword = document.getElementById("validationDefault03").value;
+        if (inputPassword === storedPassword) {
+            // 비밀번호 일치
+            // 버튼 종류에 따라 다른 동작을 수행할 수 있습니다.
+            if (buttonType === "update") {
+                // 원하는 동작 추가
+                    document.getElementById("replyForm").submit();
+            } else if (buttonType === "delete") {
+                    document.getElementById("deleteForm").submit();
+            }
+        } else {
+            alert("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+        }
     }
 
-    // 댓글 삭제
-    function showDeleteAlert() {
-        var savedPassword = document.getElementById("replyPassword").value;
-        // 사용자로부터 비밀번호 입력 받기
-        var enteredPassword = prompt("비밀번호를 입력하세요 (4자리)");
-        if (enteredPassword !== null) {
-            if (enteredPassword === savedPassword) {
-                result = confirm("정말로 삭제 하시겠습니까?");
-                if (result) {
-                    document.getElementById("deleteForm").submit();
-                    alert("삭제되었습니다.");
-                }
-            } else {
-                alert("비밀번호가 일치하지 않습니다.");
+
+
+    document.getElementById("boardupdateButton").addEventListener("click", function () {
+        boardPasswords("update");
+    });
+
+    document.getElementById("boarddeleteButton").addEventListener("click", function () {
+        boardPasswords("delete");
+    });
+
+    function boardPasswords(buttonType) {
+        const boardPassword = document.getElementById("replyPassword").value;
+        const modalPassword = document.getElementById("validationDefault04").value;
+        if (boardPassword === modalPassword) {
+            // 비밀번호 일치
+            // 버튼 종류에 따라 다른 동작을 수행할 수 있습니다.
+            if (buttonType === "update") {
+                // 원하는 동작 추가
+                document.getElementById("replyForm").submit();
+            } else if (buttonType === "delete") {
+                document.getElementById("boardDelete").submit();
             }
+        } else {
+            alert("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
         }
     }
 </script>

@@ -60,11 +60,18 @@
     <!--    상세 조회-->
     <select id="getBoard" parameterType="int" resultType="com.example.notice.domain.BoardDetails">
         SELECT *
-        FROM (
-        SELECT ROW_NUMBER() OVER (ORDER BY BOARD_NUM DESC) AS NUM, B.*
         FROM BOARD_TBL B
-        <include refid="details"/>
-        )
+        WHERE  BOARD_NUM = #{boardNum}
+    </select>
+    <!--    상세 조회-->
+    <select id="getBoardtest" parameterType="int" resultType="com.example.notice.domain.BoardDetails">
+        SELECT *
+        FROM (SELECT ROW_NUMBER() OVER (ORDER BY BOARD_NUM DESC) AS NUM, B.*
+              FROM BOARD_TBL B
+              WHERE B.GROUP_ORDER = 0
+             )
+        WHERE NUM = #{num}
+        ORDER BY NUM
     </select>
 
 
@@ -124,7 +131,7 @@
     </sql>
     <sql id="details">
         <choose>
-            <when test="group_order == 0">
+            <when test="b.group_order == 0">
                 WHERE B.GROUP_ORDER = 0 AND BOARD_NUM = #{boardNum}
             </when>
             <otherwise>

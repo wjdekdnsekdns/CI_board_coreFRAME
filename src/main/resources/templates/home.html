@@ -17,72 +17,91 @@
     </div>
 </header>
 <div id="content">
-    <div class="notice_title_search">
-        <h2 class="notice_title">게시판</h2>
-        <form id="searchForm" onsubmit="return false;" autocomplete="off">
-            <!-- 제목 작성자 검색 -->
-            <div class="board_search">
-                <label>
-                    <select id="searchType" name="searchType">
-                        <option value="title">제목</option>
-                        <option value="writer">작성자</option>
-                    </select>
-                </label>
-                <label>
-                    <input type="text" id="keyword" name="keyword" placeholder="키워드를 입력해 주세요." title="키워드 입력"/>
-                </label>
-                <button type="button" class="bt_search" onclick="movePage2(1);"><i class="fas fa-search"></i><span
-                        class="skip_info">검색</span></button>
-                <button><a href="/board/writePage">글쓰기</a></button>
-                <a href=""></a>
-            </div>
-        </form>
-
-    </div>
-    <!--    게시글 리스트-->
-    <div class="board_list">
-        <div class="board_content" th:each="item : ${response.list}">
-            <div class="write_and_date">
-                <span th:text="${item.writer}"></span>
-                <span th:text="${item.write_Date}"></span>
-            </div>
-            <div class="board_title">
-                <b class="board_num" th:text="${item.num}"></b>
-                <a th:href="@{/board/details/{boardNum}(boardNum=${item.board_Num})}">
-                    <span th:text="${item.title}"></span>
-                </a>
-            </div>
-            <div th:if="${item.group_Id == board.group_Id}" th:each="board : ${commentList}">
-                <!--답글 작성자 작성일자-->
-                <div class="write_and_date">
-                    <span th:text="${board.writer}"></span>
-                    <span th:text="${board.write_Date}"></span>
+    <div class="mainpage">
+        <div class="notice_title_search">
+            <h2 class="notice_title">게시판</h2>
+            <form id="searchForm" onsubmit="return false;" autocomplete="off">
+                <!-- 제목 작성자 검색 -->
+                <div class="board_search">
+                    <label>
+                        <select id="searchType" name="searchType">
+                            <option value="title">제목</option>
+                            <option value="writer">작성자</option>
+                        </select>
+                    </label>
+                    <label>
+                        <input type="text" id="keyword" name="keyword" placeholder="키워드를 입력해 주세요." title="키워드 입력"/>
+                    </label>
+                    <button type="button" class="bt_search" onclick="movePage2(1);"><i class="fas fa-search"></i><span
+                            class="skip_info">검색</span></button>
+                    <button><a href="/board/writePage">글쓰기</a></button>
+                    <a href=""></a>
                 </div>
-                <!--답글 제목-->
+            </form>
+
+        </div>
+        <!--    게시글 리스트-->
+        <div class="board_list">
+            <div class="board_content" th:each="item : ${response.list}">
+                <div class="write_and_date">
+                    <span class="board_writer" th:text="${item.writer}"></span>
+                    <span th:text="${item.write_Date}"></span>
+                </div>
                 <div class="board_title">
-                    <a th:href="@{/board/details/{boardNum}(boardNum=${board.board_Num})}">
-                        <span th:text="${board.title}"></span>
+                    <b class="board_num" th:text="${item.num}"></b>
+                    <a th:href="@{/board/details/{boardNum}/{num}(boardNum=${item.board_Num}, num=${item.num})}">
+                        <span th:text="${item.title}"></span>
                     </a>
                 </div>
+                <div th:if="${item.group_Id == board.group_Id}" th:each="board  : ${commentList}" class="board_comment">
+                    <div class="comment">
+                        <!--답글 작성자 작성일자-->
+                        <div class="write_and_date">
+                            <span th:text="${board.writer}"></span>
+                            <span th:text="${board.write_Date}"></span>
+                        </div>
+                        <!--답글 제목-->
+                        <div class="board_title">
+                            <a th:href="@{/board/details/{boardNum}/{num}(boardNum=${board.board_Num}, num=${board.num})}">
+                                <span th:text="${board.title}"></span>
+                            </a>
+                        </div>
+                        <input type="hidden" th:value="${board.depth}">
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- 페이징 링크를 표시하는 부분 -->
-    <div class="paging">
-        <a href="javascript:void(0);" onclick="movePage(-1);" class="page_bt next">이전 페이지</a>
-        <div th:each="pageNumber : ${#numbers.sequence(response.pagination.startPage, response.pagination.endPage)}">
-            <a th:href="'javascript:void(0);'" th:onclick="'movePage2(' + ${pageNumber} + ');'"
-               th:text="${pageNumber}"></a>
+        <!-- 페이징 링크를 표시하는 부분 -->
+        <div class="paging">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination paging">
+                    <li class="page-item">
+                        <a class="page-link page_bt next" onclick="movePage(-1);" href="javascript:void(0);"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <div th:each="pageNumber : ${#numbers.sequence(response.pagination.startPage, response.pagination.endPage)}">
+                        <a th:href="'javascript:void(0);'" th:onclick="'movePage2(' + ${pageNumber} + ');'"
+                           th:text="${pageNumber}" class="page-link"></a>
+                    </div>
+                    <li class="page-item">
+                        <a class="page-link page_bt next" onclick="movePage(1);" href="javascript:void(0);"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
-        <input type="hidden" id="pageNum" th:value="${params.page}">
-        <a href="javascript:void(0);" onclick="movePage(1);" class="page_bt next">다음 페이지</a>
     </div>
 </div>
 <script>
 
     window.onload = () => {
         setQueryStringParams();
+        setMarginLeftForComments();
     }
 
     /*<![CDATA[*/
@@ -133,6 +152,15 @@
                 form[key].value = value;
             }
         })
+    }
+
+    function setMarginLeftForComments() {
+        const comments = document.querySelectorAll('.comment'); // 댓글 요소들을 선택
+        comments.forEach(comment => {
+            const depth = parseInt(comment.querySelector('input').value); // 댓글의 깊이(depth)를 가져옴
+            const marginLeft = depth * 20 + 'px'; // value값 * 10 만큼 마진레프트 계산
+            comment.style.marginLeft = marginLeft; // 왼쪽 여백 설정
+        });
     }
 </script>
 </body>

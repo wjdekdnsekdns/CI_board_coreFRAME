@@ -28,6 +28,7 @@ public interface BoardMapper {
     void commentUpdate(Board board,BoardDetails parent);
     // 게시판 상세 조회
     BoardDetails getBoard(int boardNum);
+    BoardDetails getBoardtest(int boardNum,int num);
 
 
     // 게시판 수정 페이지

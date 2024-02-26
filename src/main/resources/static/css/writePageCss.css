@@ -8,13 +8,17 @@
     }
 }
 
-
 h2 {
     margin: 0 260px 0;
 }
 
 .container {
     margin-left: 250px;
+
+    a {
+        text-decoration: none;
+        color: black;
+    }
 
     .content {
         margin-top: 100px;
@@ -26,13 +30,12 @@ h2 {
                 height: 30px;
                 border: 1px solid #cccccc;
                 border-radius: 5px;
-
             }
-
-
         }
 
         .title_and_content {
+            margin-bottom: 20px;
+
             #title {
                 width: 800px;
                 height: 30px;
@@ -42,22 +45,22 @@ h2 {
 
             #content {
                 width: 800px;
+                height: 100px;
                 border: 1px solid #cccccc;
                 border-radius: 5px;
-                height: 100px;
             }
         }
     }
-    .title_and_content {
-    margin-bottom: 20px;
-    }
-    .title_and_content, .write_content {
+
+    .write_content {
         margin-top: 20px;
     }
+
     .form-control {
         margin-bottom: 10px;
     }
 }
-#add_file{
+
+#add_file {
     margin-bottom: 10px;
 }

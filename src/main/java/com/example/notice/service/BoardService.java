@@ -59,6 +59,9 @@ public class BoardService {
     public BoardDetails getBoard(int boardNum) {
         return boardMapper.getBoard(boardNum);
     }
+    public BoardDetails getBoardtest(int boardNum, int num) {
+        return boardMapper.getBoardtest(boardNum,num);
+    }
 
     // 게시판 상세 페이지
     public BoardDetails getUpdateBoard(int boardNum) {
