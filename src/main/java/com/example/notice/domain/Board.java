@@ -22,4 +22,5 @@ public class Board {
     private int group_Order;
     private int depth;
     private int boardMasterId;
+    private int reply_count;
 }

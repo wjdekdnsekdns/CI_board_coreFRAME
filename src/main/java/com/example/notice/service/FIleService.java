@@ -36,7 +36,9 @@ public class FIleService {
             fileMapper.fileInsert(fileRequest);
         }
     }
-
+public FileRequest fileDown(String fileName){
+    return fileMapper.fileDown(fileName);
+}
     public List<FileRequest> fileList(int boardNum) {
         return fileMapper.getFile(boardNum);
     }

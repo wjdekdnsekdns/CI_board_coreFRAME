@@ -23,13 +23,17 @@ a {
 
         border-bottom: 1px solid #cccccc;
 
-        .writer {
-            margin-right: 30px;
+        .write_date_contain {
+            .writer {
+
+                font-size: 16px;
+            }
+
+            .write_date {
+                font-size: 16px;
+            }
         }
 
-        .write_date {
-            margin-right: 30px;
-        }
 
         .update_button {
             margin-left: 500px;
@@ -37,7 +41,17 @@ a {
 
         h1 {
             margin: 20px 0;
+            font-weight: 600;
+            font-size: 20px;
         }
+    }
+
+    .flex-container {
+        display: flex;
+        justify-content: space-between; /* 요소를 좌우에 정렬합니다. */
+        align-items: center; /* 요소를 수직 가운데 정렬합니다. */
+        border-bottom: 1px solid #cccccc;
+        padding-bottom: 10px;
     }
 
     .reply {
@@ -47,6 +61,11 @@ a {
         }
 
         border-bottom: 1px solid #cccccc;
+    }
+
+    .reply_btn {
+        width: 123px;
+        margin-top: 10px;
     }
 
     .reply_date {
@@ -67,9 +86,17 @@ a {
 
     .board_title_content {
         .notice_content {
-
+            font-size: 14px;
         }
+
         margin: 30px 0 50px 0;
+    }
+
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 30
     }
 
 }

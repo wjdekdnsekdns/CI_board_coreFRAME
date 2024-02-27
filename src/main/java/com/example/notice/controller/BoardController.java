@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -69,7 +71,6 @@ public class BoardController {
     @GetMapping("/boardUpdatePage/{boardNum}")
     public String boardUpdate(@PathVariable int boardNum, Model model) {
         BoardDetails boardDetails = service.getUpdateBoard(boardNum);
-        System.out.println(boardDetails.getNum());
         model.addAttribute("list", fileService.fileList(boardNum));
         model.addAttribute("view", boardDetails);
         return "BoardUpdate";
@@ -115,6 +116,12 @@ public class BoardController {
     private static final String FILE_DIRECTORY = "C:\\noticeFile";
     @GetMapping("/fileDownload/{fileName}")
     public ResponseEntity<FileSystemResource> downloadFile(@PathVariable String fileName) throws IOException {
+        FileRequest fileRequest = fileService.fileDown(fileName);
+        String newFileName = fileRequest.getOrg_File_Name();
+        System.out.println(fileRequest.getOrg_File_Name());
+        // 파일 이름을 UTF-8로 URL 인코딩
+        String encodedFileName = URLEncoder.encode(newFileName, StandardCharsets.UTF_8.toString()).replace("+", "%20");
+
         // Load file as Resource
         Path filePath = Paths.get(FILE_DIRECTORY).resolve(fileName).normalize();
         FileSystemResource resource = new FileSystemResource(filePath);
@@ -134,8 +141,7 @@ public class BoardController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"")
                 .body(resource);
     }
-
 }

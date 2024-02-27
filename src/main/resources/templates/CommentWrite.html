@@ -19,7 +19,7 @@
 <h2>답글 작성하기</h2>
 <div class="container">
     <div class="content">
-        <form th:action="@{/board/commentWrite}" method="post" autocomplete="off" enctype="multipart/form-data">
+        <form th:action="@{/board/commentWrite}" method="post" autocomplete="off" enctype="multipart/form-data" id="board_write">
             <div class="writer_and_password">
 
                 <label for="writer">작성자</label>
@@ -51,7 +51,7 @@
             <div class="file_div">
 
             </div>
-            <button type="submit" class="submit btn btn-light">등록</button>
+            <button type="button" class="submit btn btn-light submit">등록</button>
             <button type="button" class="submit btn btn-light"><a href="/home">취소</a></button>
             <input type="hidden" id="board_Num" name="board_Num" th:value="${view.board_Num}">
             <input type="hidden" id="ground_Id" name="ground_Id" th:value="${view.group_Id}">
@@ -62,11 +62,10 @@
 </div>
 <script>
 
-    // TypeScript 코드
 
     // 버튼 요소 찾기
     const addButton = document.querySelector('.btn');
-
+    const submitButton = document.querySelector('.submit');
     // 버튼에 클릭 이벤트 리스너 추가
     addButton.addEventListener('click', function () {
         // 새로운 파일 입력 필드 생성
@@ -91,6 +90,18 @@
         form.appendChild(newLabel);
         form.appendChild(newInput);
         form.appendChild(lineBreak);
+    });
+
+    submitButton.addEventListener('click', function () {
+        const writer = document.getElementById('writer').value;
+        const password = document.getElementById('password').value;
+        const title = document.getElementById('title').value;
+        const content = document.getElementById('content').value;
+        if(writer === '' || password === '' || title === '' || content === ''){
+            alert('빈칸이 존재합니다')
+        }else{
+            document.getElementById("board_write").submit();
+        }
     });
 </script>
 </body>

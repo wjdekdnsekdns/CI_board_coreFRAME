@@ -24,4 +24,9 @@
  from FILE_TBL
  where FILE_NUM = #{file_Num}
 </delete>
+
+    <select id="fileDown" resultType="com.example.notice.domain.file.FileRequest">
+        SELECT * FROM
+            FILE_TBL WHERE FILE_TBL.STORED_FILE_NAME = '${fileName}'
+    </select>
 </mapper>

@@ -28,7 +28,6 @@ public class mainController {
         model.addAttribute("response", response);
         List<Board> commentList = service.CommentList();
         model.addAttribute("commentList", commentList);
-        System.out.println(response.getPagination().getEndPage());
         return "home";
     }
 }

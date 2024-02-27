@@ -31,7 +31,8 @@ public class Pagination {
         }
 
         // 첫 페이지 번호 계산
-        startPage = ((params.getPage() - 1) / params.getPageSize()) * params.getPageSize() + 1;
+//        startPage = ((params.getPage() - 1) / params.getPageSize()) * params.getPageSize() + 1;
+        startPage = 1;
 
         // 끝 페이지 번호 계산
         endPage = startPage + params.getPageSize() - 1;

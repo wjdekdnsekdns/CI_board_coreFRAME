@@ -7,13 +7,13 @@
     <!--게시글 리스트 조회 -->
     <select id="getList" resultType="com.example.notice.domain.Board"
             parameterType="com.example.notice.paging.Pagination">
-        SELECT *
-        FROM (SELECT ROW_NUMBER() OVER (ORDER BY BOARD_NUM DESC) AS NUM, B.*
-        FROM BOARD_TBL B
-        WHERE B.GROUP_ORDER = 0
+        SELECT * FROM (
+                          SELECT B.*, (SELECT COUNT(*) FROM REPLY_TBL R WHERE R.REPLY_BOARD = B.BOARD_NUM) AS REPLY_COUNT, ROW_NUMBER() OVER (ORDER BY BOARD_NUM DESC) AS NUM
+                          FROM BOARD_TBL B
+                          WHERE B.GROUP_ORDER = 0
         <include refid="search"/>
-        )
-        WHERE NUM BETWEEN #{pagination.limitStart} AND #{pagination.limitStart} + 9
+        ) C
+        WHERE NUM BETWEEN  #{pagination.limitStart}  AND #{pagination.limitStart} + 9
         ORDER BY NUM
     </select>
 
@@ -27,7 +27,8 @@
     <select id="count" parameterType="com.example.notice.domain.Search" resultType="int">
         SELECT COUNT(*)
         FROM BOARD_TBL
-        <include refid="search"/>
+        WHERE GROUP_ORDER = 0
+        <include refid="search2"/>
     </select>
 
 
@@ -98,6 +99,7 @@
     </delete>
 
     <!-- 게시글 검색 -->
+
     <sql id="search">
         <!-- 검색 키워드가 있을 때 -->
         <if test="keyword != null and keyword != ''">
@@ -105,11 +107,11 @@
                 <!-- 검색 유형이 있을 때 -->
                 <when test="searchType != null and searchType != ''">
                     <choose>
-                        <when test="'title'.equals( searchType )">
-                            WHERE title LIKE '%' || #{keyword} || '%'
+                        <when test="'title'.equals(searchType)">
+                            AND B.title LIKE '%' || #{keyword} || '%'
                         </when>
-                        <when test="'writer'.equals( searchType )">
-                            WHERE writer LIKE '%' || #{keyword} || '%'
+                        <when test="'writer'.equals(searchType)">
+                            AND B.writer LIKE '%' || #{keyword} || '%'
                         </when>
                     </choose>
                 </when>
@@ -117,6 +119,24 @@
         </if>
     </sql>
 
+    <sql id="search2">
+        <!-- 검색 키워드가 있을 때 -->
+        <if test="keyword != null and keyword != ''">
+            <choose>
+                <!-- 검색 유형이 있을 때 -->
+                <when test="searchType != null and searchType != ''">
+                    <choose>
+                        <when test="'title'.equals(searchType)">
+                            AND title LIKE '%' || #{keyword} || '%'
+                        </when>
+                        <when test="'writer'.equals(searchType)">
+                            AND writer LIKE '%' || #{keyword} || '%'
+                        </when>
+                    </choose>
+                </when>
+            </choose>
+        </if>
+    </sql>
     <sql id="comment">
 -- 답글과 답답글에 대한 쿼리 구분
         <choose>

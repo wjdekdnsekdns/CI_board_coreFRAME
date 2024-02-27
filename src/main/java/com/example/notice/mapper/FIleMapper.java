@@ -14,4 +14,7 @@ void fileInsert(FileRequest fileRequest);
     List<FileRequest> getFile(int boardNum);
 
     void fileDelete(int fileNum);
+    FileRequest fileDown(String fileDown);
+
+
 }
