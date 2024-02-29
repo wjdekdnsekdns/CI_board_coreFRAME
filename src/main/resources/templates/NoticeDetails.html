@@ -39,7 +39,6 @@
                     </button>
                     <br>
                     <!-- 게시글 수정 삭제 -->
-
                     <button type="button" class="btn btn-light reply_btn" data-bs-toggle="modal"
                             data-bs-target="#exampleModal2">
                         <a href="#">수정 / 삭제</a>
@@ -57,7 +56,9 @@
         </div>
         <!--            파일 -->
         <div class="board_content" th:each="item : ${list}">
+
             <a th:href="@{/board/fileDownload/{fileName}(fileName=${item.stored_File_Name})}">
+                <span class="material-symbols-outlined">download</span>
                 <span th:text="${item.org_File_Name}"></span>
             </a>
         </div>
@@ -76,6 +77,7 @@
                     th:href="@{/board/comment/{boardNum}(boardNum=${view.board_Num})}">답글 작성</a></button>
             <input type="hidden" id="boardNum" name="boardNum" th:value="${view.board_Num}">
             <input type="hidden" id="num" name="num" th:value="${view.num}">
+            <input type="hidden" id="totalCount" name="totalCount" th:value="${view.total_count}">
         </form>
 
     </div>
@@ -126,7 +128,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" id="updateButton" class="btn btn-light">수정</button>
+                                <button type="button" id="updateButton" class="btn btn-light">수정</button>
                                 <button type="button" id="deleteButton" class="btn btn-light"><a>삭제</a></button>
                             </div>
                         </div>
@@ -165,6 +167,7 @@
 
     const replyContents = document.querySelectorAll(".reply_content");
     const replySubmit = document.getElementById("reply_submit");
+
     replyContents.forEach(function (content) {
         const updateButton = content.querySelector("#updateButton");
         const deleteButton = content.querySelector("#deleteButton");
@@ -175,8 +178,10 @@
                 const storedPassword = document.getElementById("validationDefault03").value;
 
                 if (inputPassword === storedPassword) {
+                    document.getElementById("updateForm").submit();
                     const replyNum = content.querySelector("#replyNum").value;
                     comparePasswords(replyNum, "update");
+
                 } else {
                     alert("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
                 }
@@ -226,9 +231,12 @@
         const prevButton = document.getElementById('prevButton');
         const nextButton = document.getElementById('nextButton');
         const viewNum = parseInt(document.getElementById('num').value);
+        const totalCount = parseInt(document.getElementById('totalCount').value);
 
-        if (viewNum === 0) {
+        if(viewNum === 1){
             prevButton.style.display = 'none';
+        }
+        if(viewNum === totalCount){
             nextButton.style.display = 'none';
         }
     });
@@ -242,6 +250,8 @@
             document.getElementById("reply_form").submit();
         }
     });
+
+
 </script>
 </body>
 </html>

@@ -64,13 +64,18 @@
         FROM BOARD_TBL B
         WHERE  BOARD_NUM = #{boardNum}
     </select>
-    <!--    상세 조회-->
     <select id="getBoardtest" parameterType="int" resultType="com.example.notice.domain.BoardDetails">
-        SELECT *
-        FROM (SELECT ROW_NUMBER() OVER (ORDER BY BOARD_NUM DESC) AS NUM, B.*
-              FROM BOARD_TBL B
-              WHERE B.GROUP_ORDER = 0
-             )
+        SELECT numbered.*, total_count
+        FROM (
+                 SELECT ROW_NUMBER() OVER (ORDER BY BOARD_NUM DESC) AS NUM, B.*
+                 FROM BOARD_TBL B
+                 WHERE B.GROUP_ORDER = 0
+             ) numbered
+                 INNER JOIN (
+            SELECT COUNT(*) AS total_count
+            FROM BOARD_TBL
+            WHERE GROUP_ORDER = 0
+        ) count_query ON 1=1
         WHERE NUM = #{num}
         ORDER BY NUM
     </select>

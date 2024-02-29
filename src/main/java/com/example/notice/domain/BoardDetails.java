@@ -18,4 +18,5 @@ public class BoardDetails {
     private int group_Id;
     private int group_Order;
     private int depth;
+    private int total_count;
 }

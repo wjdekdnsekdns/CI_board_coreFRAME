@@ -34,7 +34,8 @@
                     <label>
                         <input type="text" id="keyword" name="keyword" placeholder="키워드를 입력해 주세요." title="키워드 입력"/>
                     </label>
-                    <button type="button" class="bt_search btn btn-light" onclick="movePage2(1);"><i class="fas fa-search"></i><span
+                    <button type="button" class="bt_search btn btn-light" onclick="movePage2(1);"><i
+                            class="fas fa-search"></i><span
                             class="skip_info">검색</span></button>
                     <button class="btn btn-light"><a href="/board/writePage">글쓰기</a></button>
                     <a href=""></a>
@@ -53,13 +54,14 @@
                 <div class="board_title">
                     <b class="board_num" th:text="${item.num}"></b>
                     <a th:href="@{/board/details/{boardNum}/{num}(boardNum=${item.board_Num}, num=${item.num})}">
-                       <B> <span th:text="${item.title}" class="board_title"></span></B>
+                        <B> <span th:text="${item.title}" class="board_title"></span></B>
                     </a>
                     <div class="reply">
-                       <span class="material-symbols-outlined">comment</span>
+                        <span class="material-symbols-outlined">comment</span>
                         <span th:text="${item.reply_count}" class="reply_count"></span>
                     </div>
                 </div>
+                <!-- 답글 -->
                 <div th:if="${item.group_Id == board.group_Id}" th:each="board  : ${commentList}" class="board_comment">
                     <div class="comment">
                         <!--답글 작성자 작성일자-->
@@ -70,9 +72,10 @@
                         <!--답글 제목-->
                         <div class="board_title">
                             <span class="material-symbols-outlined reply_icon">reply</span>
-                            <span>RE:</span><a th:href="@{/board/details/{boardNum}/{num}(boardNum=${board.board_Num}, num=${board.num})}">
-                                <span th:text="${board.title}" class="board_title"></span>
-                            </a>
+                            <span>RE:</span><a
+                                th:href="@{/board/details/{boardNum}/{num}(boardNum=${board.board_Num}, num=${board.num})}">
+                            <span th:text="${board.title}" class="board_title"></span>
+                        </a>
                         </div>
                         <input type="hidden" th:value="${board.depth}">
                     </div>
@@ -82,29 +85,33 @@
 
         <!-- 페이징 링크를 표시하는 부분 -->
         <div class="paging">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination paging">
-                    <li class="page-item">
-                        <a class="page-link page_bt next" onclick="movePage(-1);" href="javascript:void(0);"
-                           aria-label="Previous" id="prev">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <div th:each="pageNumber : ${#numbers.sequence(response.pagination.startPage, response.pagination.endPage)}">
-                        <a th:href="'javascript:void(0);'" th:onclick="'movePage2(' + ${pageNumber} + ');'"
-                           th:text="${pageNumber}" class="page-link" id="page-link"></a>
-                    </div>
-                    <input type="hidden" id="pageNum" th:value="${params.page}">
-                    <input type="hidden" id="endPage" th:value="${response.pagination.endPage}">
-                    <input type="hidden" id="startPage" th:value="${response.pagination.startPage}">
-                    <li class="page-item">
-                        <a class="page-link page_bt next" onclick="movePage(1);" href="javascript:void(0);"
-                           aria-label="Previous" id="next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+            <div th:if="${response != null and response.pagination != null}">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination paging">
+                        <li class="page-item">
+                            <a class="page-link page_bt next" onclick="movePage(-1);" href="javascript:void(0);"
+                               aria-label="Previous" id="prev">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        <div th:each="pageNumber : ${#numbers.sequence(response.pagination.startPage, response.pagination.endPage)}">
+                            <a th:href="'javascript:void(0);'" th:onclick="'movePage2(' + ${pageNumber} + ');'"
+                               th:text="${pageNumber}" class="page-link" id="page-link"></a>
+                        </div>
+                        <input type="hidden" id="pageNum" th:value="${params.page}">
+                        <input type="hidden" id="endPage" th:value="${response.pagination.endPage}">
+                        <input type="hidden" id="startPage" th:value="${response.pagination.startPage}">
+                        <li class="page-item">
+                            <a class="page-link page_bt next" onclick="movePage(1);" href="javascript:void(0);"
+                               aria-label="Previous" id="next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 </div>
@@ -114,6 +121,8 @@
         setQueryStringParams();
         setMarginLeftForComments();
     }
+
+
     const selectedPageNum = parseInt(document.getElementById('pageNum').value);
 
     // 각 페이지 링크에 대해 반복
